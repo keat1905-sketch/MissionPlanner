@@ -19,6 +19,40 @@
             }
             base.Dispose(disposing);
         }
+        Button btnUnlock = new Button();
+btnUnlock.Text = "Unlock Params";
+btnUnlock.Width = 120;
+btnUnlock.Click += BtnUnlock_Click;
+
+this.Controls.Add(btnUnlock);  
+        private void BtnUnlock_Click(object sender, EventArgs e)
+{
+    try
+    {
+        // ส่ง MAVLink COMMAND_LONG
+        MainV2.comPort.doCommand(
+            MAVLink.MAV_CMD.USER_1, // หรือใช้ 31000
+            123456, // key (ต้องตรง firmware)
+            0, 0, 0, 0, 0, 0
+        );
+
+        System.Threading.Thread.Sleep(500);
+
+        // โหลด parameter ใหม่
+        MainV2.comPort.getParamList();
+
+        MessageBox.Show("Unlock success");
+        const int MAV_CMD_UNLOCK_PARAM = 31000;
+    }
+           MainV2.comPort.doCommand(
+    (MAVLink.MAV_CMD)MAV_CMD_UNLOCK_PARAM,
+    123456, 0,0,0,0,0,0
+);
+    catch (Exception ex)
+    {
+        MessageBox.Show("Unlock failed: " + ex.Message);
+    }
+}
 
         #region Windows Form Designer generated code
 
